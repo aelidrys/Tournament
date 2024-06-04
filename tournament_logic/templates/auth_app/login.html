@@ -1,0 +1,110 @@
+
+<title>Login</title>
+<style>
+body {
+    font-family: Arial, Helvetica, sans-serif;
+    background-color: #9cb8bd;
+}
+form {
+    position: relative;
+    top: 10%;  
+    width: 30%;
+    padding: 60px 30px;
+    background-color: #a9dfbf;
+    border-radius: 15px;
+    margin-left: auto;
+    margin-right: auto;
+}
+
+.box {
+    background-color: white;
+    border-radius: 10px;
+    margin: 8px 0;
+    padding: 10px;
+    text-decoration: none;
+    display: block;
+    font-size: 30;
+    text-align: center;
+    color:black;
+    position: relative;
+    top: 30px; 
+}
+
+input[type=text], input[type=password] {
+    display: block;
+    border: none;
+    width: 100%;
+    padding: 15px 15px;
+    font-size: 20;
+    margin: 8px 0;
+    border-radius: 10px;
+}
+
+button {
+    background-color: #04AA6D;
+    color: white;
+    border: none;
+    cursor: pointer;
+    padding: 15px 20px;
+    margin: 15px 0;
+    border-radius: 10px;
+    width: 100%;
+}
+.h2_0 {
+    color: black;
+    position: relative;
+    left: 44%;
+    top: 10%;
+    font-size: 30px;
+}
+.separator {
+    text-align: center;
+    margin: 20px 0;
+    position: relative;
+}
+.separator span {
+    background:#a9dfbf;
+    padding: 0 10px;
+    position: relative;
+    z-index: 1;
+}
+
+.separator:before {
+    content: "";
+    position: absolute;
+    top: 50%;
+    left: 0;
+    right: 0;
+    z-index: 0;
+    border-top: 1px solid black;
+}
+.rgstr {
+    text-align: center;
+}
+.rglink {
+    color: green;
+}
+</style>
+
+<body>  
+    <h2 class="h2_0">Welcome back</h2>
+    <form method='post' action='#'>
+        <div class="container">       
+            {% csrf_token %}
+            <h3>username</h3>
+            <input type='text' name='username'>
+            <h3>password</h3>
+            <input type='password' name='password'>
+            <button type="submit">Login</button>
+            <label>
+                <input type="checkbox" name="remember"> Remember me
+            </label>
+            <div class="separator">
+                <span>OR</span>
+            </div>
+            <a href='{% url "intra_authorize" %}' class="box">Continue with intra 42</a>
+        </div>
+    </form>   
+</body>
+</html>
+

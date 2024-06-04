@@ -1,0 +1,42 @@
+{% extends "base.html" %}
+{% load static %}
+{% block content %}
+<style>
+.nuser{
+    color: green;
+}
+
+.user_info {
+    background-color: #a9dfbf;
+    border: 1px solid #ddd;
+    border-radius: 5px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    margin: 20px;
+    width: 300px;
+    padding: 20px;
+    display: block;
+}
+
+.user_img {
+    border-radius: 100%;
+}
+
+h3{
+    color: green;
+}
+</style>
+
+<title>Home</title>
+<body>
+    {% csrf_token %}
+    <h1>Welcome <span class='nuser'>{{ request.user.username }}</span> in Home Page</h1>
+    <form class='user_info'>
+        <div>
+            <img src='{{user_prf.image.url}}' alt="No image" width=140  class="user_img">
+        </div>
+        <h3>{{user_prf.user.username}}</h3>
+        <h3>{{user_prf.user.email}}</h3>
+    </form>
+</body>
+
+{% endblock content %}

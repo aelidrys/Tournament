@@ -1,0 +1,23 @@
+{% load static %}
+<style>
+.icons {
+    float: right;
+    display: flex;
+    align-items: center;
+    text-decoration: none;
+    padding: 10px;
+}
+
+</style>
+
+<a href="{% url 'logout' %}" class="icons">
+    <img src="{% static 'images/exit.png' %}" width=30>
+</a>
+
+<a href="{% url 'tournament' %}" class="icons">
+    <img src="{% static 'images/tournament.png' %}" width=30>
+</a>
+
+<a href="{% url 'home' %}" class="icons">
+    <img src="{% static 'images/home.png' %}" width=30>
+</a>

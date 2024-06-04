@@ -1,0 +1,69 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block content %}
+
+<style>
+body {
+    font-family: Arial, sans-serif;
+    color: #333;
+    text-align: center;
+}
+
+h3 {
+    color: #444;
+    margin: 20px 0;
+}
+
+.container {
+    width:100%;
+    margin: 16px 0 12px 0;
+    padding: 16px;
+    display: flex;
+    flex-wrap : wrap;
+    gap: 50px;
+}
+
+.data {
+    background-color: #a9dfbf;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    border-radius: 15px;
+    width: 250px;
+    height: 200px;
+    padding: 20px;
+    margin: 10px;
+}
+
+.player_img {
+    border-radius: 100%;
+    margin-bottom: 15px;
+}
+
+.player_info h3 {
+    margin: 5px 0;
+}
+
+.cg {
+    color: purple;
+}
+</style>
+{% csrf_token %}
+<body>
+<h3>Welcome in tournament <span class='cg'>{{trn_name}}</span></h3>
+<div class='container'>
+    {% for player in players %}
+    <div class="data">
+        <img src='{{player.image.url}}' alt="No image" width=140  class="player_img">
+        <h3>{{player.user.username}}</h3>
+    </div>
+    {% endfor %}
+    {% for i in range %}
+    <div class="data">
+            <img src="{% static "images/unkonu_p.png" %}" alt="No image" width=140  class="player_img">
+            <h3>wiating player...</h3>
+        </div>
+    {% endfor %}
+</div>
+</body>
+
+{% endblock content %}

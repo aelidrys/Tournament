@@ -1,0 +1,45 @@
+version: '3'
+
+services:
+  authe: 
+    container_name: auth-cont
+    image: auth_image
+    build:
+      context: authe
+      dockerfile: Dockerfile
+    volumes:
+      - r_auth_v:/user/app
+    ports:
+      - 8000:8000
+    networks:
+      - net
+    env_file: .env
+
+  # postgresql:
+  #   container_name: postgresql
+  #   image: postgres:latest
+  #   ports:
+  #     - 5432:5432
+  #   volumes:
+  #     - PgreSgl_v:/var/lib/postgresql/data
+  #   networks:
+  #     - net
+  #   env_file: .env
+
+
+volumes:
+  r_auth_v:
+      driver: local
+      driver_opts:
+        type: 'none'
+        o: 'bind'
+        device: '../tournament_logic'
+  PgreSgl_v:
+    driver: local
+    driver_opts:
+      type: 'none'
+      o: 'bind'
+      device: '../PgreSql'
+
+networks:
+  net:
