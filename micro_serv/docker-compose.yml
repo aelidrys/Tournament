@@ -26,6 +26,14 @@ services:
   #     - net
   #   env_file: .env
 
+  redis:
+    container_name: redis
+    image: redis:7
+    ports:
+      - 6379:6379
+    networks:
+      - net 
+
 
 volumes:
   r_auth_v:

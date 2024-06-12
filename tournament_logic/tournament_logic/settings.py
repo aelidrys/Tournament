@@ -20,10 +20,11 @@ ALLOWED_HOSTS = ['*']
 # Application definition
 
 INSTALLED_APPS = [
+    "channels",
     "daphne",
+    'tournament_app.apps.TournamentAppConfig',
     'django.contrib.admin',
     'authentication_app.apps.AuthenticationAppConfig',
-    'tournament_app.apps.TournamentAppConfig',
     'django.contrib.auth',
     'django.contrib.contenttypes',
     'django.contrib.sessions',
@@ -60,6 +61,15 @@ TEMPLATES = [
 ]
 
 WSGI_APPLICATION = 'tournament_logic.wsgi.application'
+ASGI_APPLICATION = "tournament_logic.asgi.application"
+CHANNEL_LAYERS = {
+    "default": {
+        "BACKEND": "channels_redis.core.RedisChannelLayer",
+        "CONFIG": {
+            "hosts": [('redis', 6379)],
+        },
+    },
+}
 
 # Database
 # https://docs.djangoproject.com/en/4.2/ref/settings/#databases
@@ -90,7 +100,6 @@ AUTH_PASSWORD_VALIDATORS = [
     },
 ]
 
-ASGI_APPLICATION = "tournament_logic.asgi.application"
 # Internationalization
 # https://docs.djangoproject.com/en/4.2/topics/i18n/
 

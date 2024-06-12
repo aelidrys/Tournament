@@ -49,20 +49,78 @@ h3 {
 </style>
 {% csrf_token %}
 <body>
+<div id="trn">
 <h3>Welcome in tournament <span class='cg'>{{trn_name}}</span></h3>
 <div class='container'>
     {% for player in players %}
-    <div class="data">
-        <img src='{{player.image.url}}' alt="No image" width=140  class="player_img">
-        <h3>{{player.user.username}}</h3>
-    </div>
+        <div class="data">
+            <img src='{{player.image.url}}' alt="No image" width=140  class="player_img">
+            <h3>{{player.user.username}}</h3>
+        </div>
     {% endfor %}
     {% for i in range %}
     <div class="data">
-            <img src="{% static "images/unkonu_p.png" %}" alt="No image" width=140  class="player_img">
-            <h3>wiating player...</h3>
-        </div>
+        <img src="{% static 'images/unkonu_p.png' %}" alt="No image" width=140  class="player_img">
+        <h3>wiating player...</h3>
+    </div>
     {% endfor %}
+    </div>
+<script>
+    function updatePlayer(data) {
+        const container = document.querySelector('.container');
+        container.innerHTML = '';
+
+        data.tourn_players.forEach(player => {
+            const playerDiv = document.createElement('div');
+            playerDiv.className = 'data';
+            
+            const img = document.createElement('img');
+            img.src = player.image_url;
+            img.alt = 'No image';
+            img.width = 140;
+            img.className = 'player_img';
+            
+            const h3 = document.createElement('h3');
+            h3.textContent = player.username;
+            
+            playerDiv.appendChild(img);
+            playerDiv.appendChild(h3);
+            container.appendChild(playerDiv);
+        });
+
+        data.range.forEach(() => {
+            const waitingDiv = document.createElement('div');
+            waitingDiv.className = 'data';
+            
+            const img = document.createElement('img');
+            img.src = "{% static 'images/unkonu_p.png' %}";
+            img.alt = 'No image';
+            img.width = 140;
+            img.className = 'player_img';
+            
+            const h3 = document.createElement('h3');
+            h3.textContent = 'waiting player...';
+            
+            waitingDiv.appendChild(img);
+            waitingDiv.appendChild(h3);
+            container.appendChild(waitingDiv);
+        });
+    }
+
+    // Establish WebSocket connection
+    const socket = new WebSocket('ws://' + window.location.host + '/ws/tourn/');
+
+    // Listen for messages from the WebSocket
+    socket.onmessage = function(event) {
+        const data = JSON.parse(event.data);
+        updatePlayer(data);
+    };
+
+    // Handle WebSocket errors
+    socket.onerror = function(error) {
+        console.error('WebSocket error:', error);
+    };
+</script>
 </div>
 </body>
 

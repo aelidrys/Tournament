@@ -3,7 +3,7 @@ from django.contrib.auth.models import User
 from django.contrib.auth import logout, login, authenticate
 from django.contrib import messages
 from urllib.parse import urlencode
-from .decorators import unauthentication_user, autenticated_only
+from .decorators import unauthentication_user, authenticated_only
 import os
 import secrets
 import requests
@@ -119,7 +119,7 @@ def my_login(request):
             return redirect('home')
     return render(request, 'auth_app/login.html')
 
-@autenticated_only
+@authenticated_only
 def home(request):
     user_prf = get_user(request)
     if user_prf:
@@ -127,7 +127,7 @@ def home(request):
     context = {'user_prf':user_prf}
     return render(request, 'auth_app/home.html', context)
 
-@autenticated_only
+@authenticated_only
 def _logout(request):
     logout(request)
     request.session.set_expiry(0)

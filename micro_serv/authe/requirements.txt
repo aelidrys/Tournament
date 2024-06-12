@@ -11,3 +11,4 @@ django-cors-headers==3.13.0  # Updated to a compatible version
 drf-jwt==1.13.3
 pyjwt==1.7.1
 requests==2.31.0
+channels_redis

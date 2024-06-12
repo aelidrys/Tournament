@@ -10,7 +10,7 @@ def unauthentication_user(view_fun):
         return view_fun(request, *args, **kwargs)
     return wrapper_fun
 
-def autenticated_only(view_fun):
+def authenticated_only(view_fun):
     def wrapper_fun(request, *arg, **args):
         user_prf = get_user(request)
         if user_prf:
