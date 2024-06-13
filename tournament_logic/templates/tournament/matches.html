@@ -10,7 +10,7 @@ body {
     text-align: center;
 }
 
-.container {
+.matches {
     width: 100%;
     margin: 16px 0 12px 0;
     padding: 16px;
@@ -65,7 +65,7 @@ h3 {
 }
 </style>
 <body>
-<div class='container'>
+<div class='matches'>
 {% for matche in matches %}
     {% if matche.player1.id == user_prf.id %}
         <div class='matche'>

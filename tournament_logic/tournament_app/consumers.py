@@ -37,6 +37,7 @@ class WSConsumer(WebsocketConsumer):
         
         # Send updated player data to WebSocket
         self.send(text_data=json.dumps({
+            'type': 'tourn',
             'tourn_players': players,
             'range': rang,
         }))
@@ -46,6 +47,7 @@ class WSConsumer(WebsocketConsumer):
         user = event['user']
 
         self.send(text_data=json.dumps({
+            'type': 'matche',
             'matche': matche_obj,
             'user': user,
         }))

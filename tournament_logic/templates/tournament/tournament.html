@@ -2,51 +2,9 @@
 {% load static %}
 
 {% block content %}
-
-<style>
-body {
-    font-family: Arial, sans-serif;
-    color: #333;
-    text-align: center;
-}
-
-h3 {
-    color: #444;
-    margin: 20px 0;
-}
-
-.container {
-    width:100%;
-    margin: 16px 0 12px 0;
-    padding: 16px;
-    display: flex;
-    flex-wrap : wrap;
-    gap: 50px;
-}
-
-.data {
-    background-color: #a9dfbf;
-    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-    border-radius: 15px;
-    width: 250px;
-    height: 200px;
-    padding: 20px;
-    margin: 10px;
-}
-
-.player_img {
-    border-radius: 100%;
-    margin-bottom: 15px;
-}
-
-.player_info h3 {
-    margin: 5px 0;
-}
-
-.cg {
-    color: purple;
-}
-</style>
+<head>
+    <link rel="stylesheet" href="{% static 'css/tourn.css' %}">
+</head>
 {% csrf_token %}
 <body>
 <div id="trn">
@@ -106,6 +64,18 @@ h3 {
             container.appendChild(waitingDiv);
         });
     }
+    function display_matche(data){
+        const container = document.querySelector('.container');
+        container.innerHTML = '';
+        
+        data.matches.forEach(mtch => {
+            const matche = document.createElement('div');
+            matche.className = 'matche';
+
+            const img = document.createElement('img');
+            img.src = mtch.player1
+        });
+    }
 
     // Establish WebSocket connection
     const socket = new WebSocket('ws://' + window.location.host + '/ws/tourn/');
@@ -113,7 +83,11 @@ h3 {
     // Listen for messages from the WebSocket
     socket.onmessage = function(event) {
         const data = JSON.parse(event.data);
-        updatePlayer(data);
+        if (data.type == 'tourn')
+            updatePlayer(data);
+        if (data.type == 'matche')
+            display_matche(data);
+
     };
 
     // Handle WebSocket errors

@@ -54,7 +54,6 @@ def create_matche(p1, p2, trn):
 def send_match_start(matche_obj: matche, user: user_profile):
     channel_layer = get_channel_layer()
     group_name = f'{user.tournament.name}_group'
-    trn = tournament.objects.latest("id")
 
     print('views_group: ', group_name)
     async_to_sync(channel_layer.group_send)(
