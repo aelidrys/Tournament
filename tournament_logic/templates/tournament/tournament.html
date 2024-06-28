@@ -65,16 +65,46 @@
         });
     }
     function display_matche(data){
+        matche = data.matche;
         const container = document.querySelector('.container');
         container.innerHTML = '';
         
-        data.matches.forEach(mtch => {
-            const matche = document.createElement('div');
-            matche.className = 'matche';
+        console.log(data);
+        const matchediv = document.createElement('div');
+        matchediv.className = 'matche';
+        
+        const p1_div = document.createElement('div');
+        p1_div.className = 'player1';
 
-            const img = document.createElement('img');
-            img.src = mtch.player1
-        });
+        const p1_img = document.createElement('img');
+        p1_img.src = matche.p1_image_url;
+        p1_img.alt = 'No imge';
+        p1_img.width = 140;
+        p1_img.className = 'player_img';
+
+        const p1_h3 = document.createElement('h3');
+        p1_h3.textContent = matche.p1_username;
+
+        p1_div.appendChild(p1_img);
+        p1_div.appendChild(p1_h3);
+        matchediv.appendChild(p1_div);
+
+        const p2_div = document.createElement('div');
+        p2_div.className = 'player2';
+
+        const p2_img = document.createElement('img');
+        p2_img.src = matche.p2_image_url;
+        p2_img.alt = 'No imge';
+        p2_img.width = 140;
+        p2_img.className = 'player_img';
+
+        const p2_h3 = document.createElement('h3');
+        p2_h3.textContent = matche.p2_username;
+
+        p2_div.appendChild(p2_img);
+        p2_div.appendChild(p2_h3);
+        matchediv.appendChild(p2_div);
+        container.appendChild(matchediv);
     }
 
     // Establish WebSocket connection

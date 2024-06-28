@@ -18,9 +18,8 @@ def play_tournament(request):
     if t_count == 0:
         trn = tournament.objects.create(name=f"trn{user_prf.user.id}")
     if user_prf.tournament is None:
-        tourn_subscribing(user_prf)
-        trn = tournament.objects.latest("id")
-        send_tournament_update(trn)
+        tourn_subscribing(request, user_prf)
+        # trn = tournament.objects.latest("id")
 
     # print("after -> id: {}, name: {}, status: {}".format(trn.id, trn.name, trn.status))
 
@@ -30,7 +29,7 @@ def play_tournament(request):
     return render(request, 'tournament/tournament.html', players)
 
 
-def tourn_subscribing(user_prf: user_profile):
+def tourn_subscribing(request, user_prf: user_profile):
     tourn = tournament.objects.latest("id")
     if tourn.status == Tourn_status.CLOSED.value:
         tourn_name = f"tourn_{user_prf.user.id}"
@@ -44,7 +43,10 @@ def tourn_subscribing(user_prf: user_profile):
         if t_players == 4:
             tourn.status = Tourn_status.CLOSED.value
             tourn.save()
-            create_matches(tourn)
+            create_matches(request, tourn)
+        else:
+            send_tournament_update(tourn)
+
 
 
 def send_tournament_update(trn: tournament):
@@ -53,7 +55,6 @@ def send_tournament_update(trn: tournament):
     trn = tournament.objects.latest("id")
     players = trn.players.all()
     rang = list(range(4-trn.players.count()))
-    print('views_group: ', room_group_name)
     async_to_sync(channel_layer.group_send)(
         room_group_name,
         {
@@ -65,3 +66,4 @@ def send_tournament_update(trn: tournament):
             'range': rang,
         }
     )
+    print('tourn_up send to group: ', room_group_name)

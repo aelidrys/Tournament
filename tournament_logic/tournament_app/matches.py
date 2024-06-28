@@ -23,10 +23,12 @@ def start_matche(request):
     user_prf = get_user(request)
     if user_prf is None:
         return
-    matche_obj = user_prf.tournament.matches.all()
-    context = {'matches':matche_obj, 'user_prf':user_prf}
-    send_match_start(matche_obj, user_prf.tournament)
-    return render(request, 'tournament/matches.html', context) 
+    matches = user_prf.tournament.matches.all()
+    matche_obj = get_matche(user_prf.tournament.matches.all(), user_prf)
+
+    # context = {'matche':matches, 'user_prf':user_prf}
+    send_match_start(matche_obj, user_prf)
+    # return render(request, 'tournament/matches.html', context) 
 
 def create_matches(request, tourn: tournament):
     players = tourn.players.all()
@@ -54,13 +56,21 @@ def create_matche(p1, p2, trn):
 def send_match_start(matche_obj: matche, user: user_profile):
     channel_layer = get_channel_layer()
     group_name = f'{user.tournament.name}_group'
+    trn_pk = user.tournament.id
 
-    print('views_group: ', group_name)
+    print('matches_group: ', group_name)
     async_to_sync(channel_layer.group_send)(
         group_name,
         {
             "type": "start_matche",
-            "matche": matche_obj,
-            "user": user,
+            "trn_id": trn_pk,
         }    
     )
+
+def get_matche(matches, user):
+    for matche in matches:
+        if matche.player1 == user:
+            return matche
+        if matche.player2 == user:
+            return matche
+    return None
