@@ -58,7 +58,7 @@ def send_match_start(matche_obj: matche, user: user_profile):
     group_name = f'{user.tournament.name}_group'
     trn_pk = user.tournament.id
 
-    print('matches_group: ', group_name)
+    print('send_match_start to : ', group_name)
     async_to_sync(channel_layer.group_send)(
         group_name,
         {
@@ -69,8 +69,10 @@ def send_match_start(matche_obj: matche, user: user_profile):
 
 def get_matche(matches, user):
     for matche in matches:
-        if matche.player1 == user:
+        if matche.player1.user == user:
             return matche
-        if matche.player2 == user:
+        if matche.player2.user == user:
             return matche
-    return None
+    print('no matche exist', flush=True)
+    for matche in matches:
+        return matche

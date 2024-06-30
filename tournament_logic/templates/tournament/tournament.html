@@ -66,15 +66,19 @@
     }
     function display_matche(data){
         matche = data.matche;
+        my_p = data.user_id;
         const container = document.querySelector('.container');
         container.innerHTML = '';
         
         console.log(data);
         const matchediv = document.createElement('div');
         matchediv.className = 'matche';
-        
+
         const p1_div = document.createElement('div');
-        p1_div.className = 'player1';
+        if (my_p == 'p1')
+            p1_div.className = 'player1';
+        else
+            p1_div.className = 'player2';
 
         const p1_img = document.createElement('img');
         p1_img.src = matche.p1_image_url;
@@ -90,7 +94,10 @@
         matchediv.appendChild(p1_div);
 
         const p2_div = document.createElement('div');
-        p2_div.className = 'player2';
+        if (my_p == 'p1')
+            p2_div.className = 'player2';
+        else
+            p2_div.className = 'player1';
 
         const p2_img = document.createElement('img');
         p2_img.src = matche.p2_image_url;
@@ -110,6 +117,7 @@
     // Establish WebSocket connection
     const socket = new WebSocket('ws://' + window.location.host + '/ws/tourn/');
 
+    console.log('HELLOW!!')
     // Listen for messages from the WebSocket
     socket.onmessage = function(event) {
         const data = JSON.parse(event.data);
@@ -122,7 +130,12 @@
 
     // Handle WebSocket errors
     socket.onerror = function(error) {
-        console.error('WebSocket error:', error);
+        console.error('WebSocket error: ', error);
+    };
+
+    window.onbeforeunload = function() {
+        console.log('CLOSE')
+        socket.close();
     };
 </script>
 </div>
