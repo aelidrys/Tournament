@@ -1,7 +1,7 @@
 from django.shortcuts import render
 from authentication_app.decorators import authenticated_only
 from .models import tournament
-from .matches import matche, create_matches
+from .matches import matche, create_matches, player
 from authentication_app.views import get_user, user_profile
 from .enums import Tourn_status, M_status
 from channels.layers import get_channel_layer
@@ -34,6 +34,7 @@ def tourn_subscribing(request, user_prf: user_profile):
     if tourn.status == Tourn_status.CLOSED.value:
         tourn_name = f"tourn_{user_prf.user.id}"
         new_tourn = tournament.objects.create(name=tourn_name)
+        plyr = player.objects.create(tourn=new_tourn)
         user_prf.tournament = new_tourn
         user_prf.save()
     else:

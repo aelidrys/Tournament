@@ -7,17 +7,25 @@ from .enums import Round, M_status
 from django.shortcuts import render
 from asgiref.sync import async_to_sync
 
+class player(models.Model):
+    tournament = models.ForeignKey(tournament, on_delete=models.CASCADE,
+        related_name="trn_players")
+    profile = models.OneToOneField(user_profile, related_name="player",
+        on_delete=models.CASCADE, null=True)
+    won = models.BooleanField(default=False)
+
 class matche(models.Model):
     tourn = models.ForeignKey(tournament, on_delete=models.CASCADE,
         related_name="matches")
     round = models.CharField(max_length=50, default=Round.HALF.value,
         choices=Round.choices())
-    player1 = models.OneToOneField(user_profile, related_name="p1",
+    player1 = models.OneToOneField(player, related_name="p1",
         on_delete=models.CASCADE, null=True)
-    player2 = models.OneToOneField(user_profile, related_name="p2",
+    player2 = models.OneToOneField(player, related_name="p2",
         on_delete=models.CASCADE, null=True)
     status = models.CharField(max_length=50, default=M_status.UNPLAYED.value,
         choices=M_status.choices())
+
 
 def start_matche(request):
     user_prf = get_user(request)
