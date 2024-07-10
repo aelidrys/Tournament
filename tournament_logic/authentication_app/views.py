@@ -11,7 +11,7 @@ from django.core.files import File
 from urllib.request import urlopen
 from tempfile import NamedTemporaryFile
 from django.core.exceptions import ValidationError
-from .models import user_profile
+from .models import profile
 # from rest_framework import response
 
 
@@ -50,7 +50,7 @@ def exchange_data(code):
     return post_data
 
 # download image of remote user from intra
-def download_image_from_url(user_prf: user_profile, image_link):
+def download_image_from_url(user_prf: profile, image_link):
     try:
         img_temp = NamedTemporaryFile(delete=True)
         with urlopen(image_link) as img_link:
@@ -67,7 +67,7 @@ def UsercreateORupdate(access_token, user_data):
     image_link = user_data.get('image')['link']
     user, created = User.objects.get_or_create(username=login, email=email)
     if created:
-        user_prf = user_profile.objects.create(user=user, remote_user=True)
+        user_prf = profile.objects.create(user=user, remote_user=True)
         user_prf.user = user
         user_prf.user.username = login
         user_prf.user.email = email
@@ -76,7 +76,7 @@ def UsercreateORupdate(access_token, user_data):
         download_image_from_url(user_prf, image_link)
         user.save()
     else:
-        user_prf = user_profile.objects.get(user=user)
+        user_prf = profile.objects.get(user=user)
         user_prf.access_token = access_token
         user_prf.save()
 
@@ -138,7 +138,7 @@ def get_user(request):
     #local user
     if request.user.is_authenticated:
         try:
-            user_prf = user_profile.objects.get(user=request.user)
+            user_prf = profile.objects.get(user=request.user)
             return user_prf
         except:
             return None
@@ -150,7 +150,7 @@ def get_user(request):
     user_prf = None
     if access_token:
         try:
-            user_prf = user_profile.objects.get(access_token=access_token)
+            user_prf = profile.objects.get(access_token=access_token)
         except:
             return None
     return user_prf

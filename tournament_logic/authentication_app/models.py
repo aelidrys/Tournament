@@ -3,19 +3,22 @@ from django.dispatch import receiver
 from django.db import models
 from django.contrib.auth.models import User
 from tournament_app.models import tournament
+from tournament_app.enums import U_status
+
 
 # Create your models here.
 
 default_image_path = '/user/app/media/UserPhotos/default.jpg'
 
 
-class user_profile(models.Model):
+class profile(models.Model):
     user = models.OneToOneField(User, on_delete=models.CASCADE)
     image = models.ImageField(default='UserPhotos/default.jpg',
         upload_to='UserPhotos')
     access_token = models.CharField(max_length=200, null=True, blank=True)
     remote_user = models.BooleanField(default=False)
-    # tournament
+    status = models.CharField(max_length=50, choices=U_status.choices(),
+        default=U_status.ON.value)
     tournament = models.ForeignKey(tournament, related_name="players",
         on_delete=models.SET_NULL, default=None, null=True, blank=True)
 
@@ -23,15 +26,15 @@ class user_profile(models.Model):
         return self.user.username+"_prf"
 
 
-# delete image when user_profile deleted
-@receiver(models.signals.post_delete, sender=user_profile)
+# delete image when profile deleted
+@receiver(models.signals.post_delete, sender=profile)
 def auto_delete_file_on_delete(sender, instance, **kwargs):
     if instance.image and not instance.image.path == default_image_path:
         if os.path.isfile(instance.image.path):
             os.remove(instance.image.path)
 
 # delete old image when a new image is selected
-@receiver(models.signals.pre_save, sender=user_profile)
+@receiver(models.signals.pre_save, sender=profile)
 def auto_delete_file_on_change(sender, instance, **kwargs):
     if not instance.pk:
         return False

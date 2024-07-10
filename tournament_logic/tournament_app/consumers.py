@@ -7,7 +7,7 @@ from time import sleep
 # local import
 from .views import play_tournament
 from .models import tournament
-from .matches import get_matche
+from .matches import get_matche, matche_simulation
 
 class WSConsumer(WebsocketConsumer):
     def connect(self):
@@ -28,8 +28,12 @@ class WSConsumer(WebsocketConsumer):
         self.accept()
 
     def receive(self, text_data):
-        print('receive')
-        pass
+        print('receive', flush=True)
+        user = self.scope.get("user", None)
+        data = json.loads(text_data)
+        if data['type'] == 'play_matche':
+            trn = matche_simulation(user)
+            self.send_matche_start(trn, 'false')
 
     def disconnect(self, close_code):
         print("DISCONNECT", flush=True)
@@ -60,24 +64,31 @@ class WSConsumer(WebsocketConsumer):
 
     def start_matche(self, event):
         trn_id = event['trn_id']
+        refresh = event['refresh']
         trn = tournament.objects.get(id=trn_id)
+        self.send_matche_start(trn, refresh)
+    
+    def send_matche_start(self, trn, refresh):
         user = self.scope.get("user", None)
         matche_obj = get_matche(trn.matches.all(), user)
-        if user.pk == matche_obj.player1.user.pk:
-            my_p = 'p1'
+        if user.pk == matche_obj.player1.profile.user.pk:
+            plyr1 = matche_obj.player1
+            plyr2 = matche_obj.player2
         else:
-            my_p = 'p2'
-        print('start_matche by user: {} my_p: {}'.format(user.username,
-                    my_p), flush=True)
+            plyr1 = matche_obj.player2
+            plyr2 = matche_obj.player1
+
+        print('start_matche by user: {}'.format(user.username,
+                    ), flush=True)
         self.send(text_data=json.dumps({
             'type': 'matche',
+            'refresh': refresh,
             'matche': {
-                'p1_image_url': matche_obj.player1.image.url,
-                'p1_username': matche_obj.player1.user.username,
-                'p2_image_url': matche_obj.player2.image.url,
-                'p2_username': matche_obj.player2.user.username,
+                'p1_image_url': plyr1.profile.image.url,
+                'p1_username': plyr1.profile.user.username,
+                'p2_image_url': plyr2.profile.image.url,
+                'p2_username': plyr2.profile.user.username,
             },
-            'my_p': my_p,
         }))
 
         

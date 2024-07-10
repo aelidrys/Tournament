@@ -2,17 +2,18 @@ from enum import Enum
 from enum import auto
 
 class Round(Enum):
-    QUATER = 8
-    HALF = 4
-    FAINAL = 2
+    QU = 'quarter'
+    HF = 'half'
+    FN = 'final'
 
     @classmethod
     def choices(cls):
         return tuple((i.name, i.value) for i in cls)
 
 class Tourn_status(Enum):
-    PENDING = 'pending'
-    CLOSED = 'closed'
+    PN = 'pending'
+    ST = 'start'
+    EN = 'end'
 
     @classmethod
     def choices(cls):
@@ -20,9 +21,20 @@ class Tourn_status(Enum):
     
 
 class M_status(Enum):
-    UNPLAYED = 'unplayed'
-    PLAYED = 'played'
+    UNP = 'unplayed'
+    PLY = 'played'
 
     @classmethod
     def choices(cls):
         return tuple((i.name, i.value) for i in cls)
+    
+
+class U_status(Enum):
+    ON = 'online'
+    OF = 'ofline'
+    IG = 'ingame'
+
+    @classmethod
+    def choices(cls):
+        return tuple((i.name, i.value) for i in cls)
+    

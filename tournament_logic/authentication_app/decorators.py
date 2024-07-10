@@ -1,6 +1,6 @@
 from django.http import HttpResponse
 from django.shortcuts import redirect
-from .models import user_profile
+from .models import profile
 
 def unauthentication_user(view_fun):
     def wrapper_fun(request, *args, **kwargs):
@@ -22,7 +22,7 @@ def authenticated_only(view_fun):
 def get_user(request):
     if request.user.is_authenticated:
         try:
-            user_prf = user_profile.objects.get(user=request.user)
+            user_prf = profile.objects.get(user=request.user)
             return user_prf
         except:
             return None
@@ -33,7 +33,7 @@ def get_user(request):
     user = None
     if access_token:
         try:
-            user = user_profile.objects.get(access_token=access_token)
+            user = profile.objects.get(access_token=access_token)
         except:
             return None
     return user

@@ -5,6 +5,7 @@
 <head>
     <link rel="stylesheet" href="{% static 'css/tourn.css' %}">
 </head>
+
 {% csrf_token %}
 <body>
 <div id="trn">
@@ -12,8 +13,8 @@
 <div class='container'>
     {% for player in players %}
         <div class="data">
-            <img src='{{player.image.url}}' alt="No image" width=140  class="player_img">
-            <h3>{{player.user.username}}</h3>
+            <img src='{{player.profile.image.url}}' alt="No image" width=140  class="player_img">
+            <h3>{{player.profile.user.username}}</h3>
         </div>
     {% endfor %}
     {% for i in range %}
@@ -24,7 +25,7 @@
     {% endfor %}
     </div>
 <script>
-    function updatePlayer(data) {
+    function updatePlayer(data, socket) {
         const container = document.querySelector('.container');
         container.innerHTML = '';
 
@@ -63,10 +64,15 @@
             waitingDiv.appendChild(h3);
             container.appendChild(waitingDiv);
         });
+        
+        
+        
+        
+    
     }
-    function display_matche(data){
+    async function display_matche(data){
+        refresh = data.refresh
         matche = data.matche;
-        my_p = data.user_id;
         const container = document.querySelector('.container');
         container.innerHTML = '';
         
@@ -75,10 +81,7 @@
         matchediv.className = 'matche';
 
         const p1_div = document.createElement('div');
-        if (my_p == 'p1')
-            p1_div.className = 'player1';
-        else
-            p1_div.className = 'player2';
+        p1_div.className = 'player1';
 
         const p1_img = document.createElement('img');
         p1_img.src = matche.p1_image_url;
@@ -92,39 +95,66 @@
         p1_div.appendChild(p1_img);
         p1_div.appendChild(p1_h3);
         matchediv.appendChild(p1_div);
-
+        
         const p2_div = document.createElement('div');
-        if (my_p == 'p1')
-            p2_div.className = 'player2';
-        else
-            p2_div.className = 'player1';
+        p2_div.className = 'player2';
 
+        
         const p2_img = document.createElement('img');
         p2_img.src = matche.p2_image_url;
         p2_img.alt = 'No imge';
         p2_img.width = 140;
         p2_img.className = 'player_img';
-
+        
         const p2_h3 = document.createElement('h3');
         p2_h3.textContent = matche.p2_username;
-
+        
         p2_div.appendChild(p2_img);
         p2_div.appendChild(p2_h3);
         matchediv.appendChild(p2_div);
         container.appendChild(matchediv);
-    }
+        if (refresh == 'true'){
 
+            console.log('aaaaaa');
+            const count = document.createElement('div');
+            count.className = 'count';
+            const h_1 = document.createElement('h1');
+            h_1.textContent = 3;
+            count.appendChild(h_1);
+            matchediv.appendChild(count);
+            await sleep(1);
+            h_1.textContent = 2;
+            count.appendChild(h_1);
+            await sleep(1);
+            h_1.textContent = 1;
+            count.appendChild(h_1);
+            await sleep(1);
+            h_1.textContent = '';
+            count.appendChild(h_1);
+            console.log('bbbbbb');
+            
+            const message = {
+                'type': 'play_matche',
+            };
+            socket.send(JSON.stringify(message));
+        }
+    }
+    
     // Establish WebSocket connection
     const socket = new WebSocket('ws://' + window.location.host + '/ws/tourn/');
 
+    function sleep(s) {
+        return new Promise(resolve => setTimeout(resolve, s*1000));
+    }
+    
     console.log('HELLOW!!')
     // Listen for messages from the WebSocket
     socket.onmessage = function(event) {
         const data = JSON.parse(event.data);
         if (data.type == 'tourn')
-            updatePlayer(data);
+            updatePlayer(data, socket);
         if (data.type == 'matche')
-            display_matche(data);
+            display_matche(data, socket);
 
     };
 
