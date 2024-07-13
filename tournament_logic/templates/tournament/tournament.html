@@ -73,10 +73,21 @@
     async function display_matche(data){
         refresh = data.refresh
         matche = data.matche;
+        m_res = data.m_res;
+        console.log(data);
+        
         const container = document.querySelector('.container');
         container.innerHTML = '';
         
-        console.log(data);
+        if (m_res == 'lose'){
+            const losediv = document.createElement('div');
+            const lose_msg = document.createElement('h1');
+            lose_msg.textContent = 'YOU LOSE';
+            losediv.className = 'count';
+            losediv.appendChild(lose_msg);
+            container.appendChild(losediv);
+            return;
+        }
         const matchediv = document.createElement('div');
         matchediv.className = 'matche';
 

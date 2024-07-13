@@ -1,5 +1,5 @@
 from .models import tournament
-from .matches import create_matches, player
+from .matches import create_matches, player, send_match_start
 from authentication_app.views import profile
 from .enums import Tourn_status, U_status
 from channels.layers import get_channel_layer
@@ -26,7 +26,8 @@ def tourn_subscribing(request, user_prf: profile):
         if t_players == 4:
             tourn.status = Tourn_status.ST.value
             tourn.save()
-            create_matches(request, tourn)
+            create_matches(tourn)
+            send_match_start(tourn, 'true')
             return 1
         else:
             send_tournament_update(tourn)
@@ -43,6 +44,7 @@ def send_tournament_update(tourn: tournament):
         room_group_name,
         {
             'type': 'update_tournament',
+            'start_status': tourn.status,
             'tourn_players': [
                 {'image_url': player.profile.image.url, 'username': player.profile.user.username}
                 for player in players
